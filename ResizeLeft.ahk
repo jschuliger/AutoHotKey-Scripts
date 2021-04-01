@@ -6,6 +6,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;WinMove, WinTitle, (WinText), x-coord, y-coord, window length, window height
 ;WinMove, WinTitle, WinText, X, Y [, Width, Height, ExcludeTitle, ExcludeText]
 
+
 DetectHiddenWindows On
 PostMessage 0x319,, 0xE0000,, ahk_exe spotify.exe ; msg = WM_APPCOMMAND; lParam = APPCOMMAND_MEDIA_PLAY_PAUSE
 Sleep, 80
