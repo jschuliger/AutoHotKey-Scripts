@@ -9,5 +9,6 @@ Just backing up my AutoHotKey scripts.
 - `DoubleClickFix.ahk`* - cancels a click input if mouse double-clicks too fast
 - `Email-Date_HotKeys.ahk` - certain keys output specific text (eg. "]dp" -> "September 1, 2010")
 - `VariousUtilityHotKeys.ahk` - various utilities
+- `tigerlily's Screen Dimmer.exe` - gui to change screen brightness individually and more
 
 *scripts in MainScriptCollection.ahk
