@@ -8,13 +8,19 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;WinMove, WinTitle, WinText, X, Y [, Width, Height, ExcludeTitle, ExcludeText]
 
 Numpad4::
-DetectHiddenWindows On
-PostMessage 0x319,, 0xE0000,, ahk_exe spotify.exe ; msg = WM_APPCOMMAND; lParam = APPCOMMAND_MEDIA_PLAY_PAUSE
-Sleep, 100
-WinMove, Spotify Premium, , -1920, 0, 992, 1040
-Sleep, 100
-DetectHiddenWindows On
-PostMessage 0x319,, 0xE0000,, ahk_exe spotify.exe ; msg = WM_APPCOMMAND; lParam = APPCOMMAND_MEDIA_PLAY_PAUSE
+DetectHiddenWindows, On
+
+; Get the HWND of the Spotify main window.
+getSpotifyHwnd() {
+	WinGet, spotifyHwnd, ID, ahk_exe spotify.exe
+	; We need the app's third top level window, so get next twice.
+	spotifyHwnd := DllCall("GetWindow", "uint", spotifyHwnd, "uint", 2)
+	spotifyHwnd := DllCall("GetWindow", "uint", spotifyHwnd, "uint", 2)
+	Return spotifyHwnd
+}
+
+spotifyHwnd := getSpotifyHwnd()
+WinMove, ahk_id %spotifyHwnd%, , -1920, 0, 992, 1040
 
 WinMove, ahk_exe Discord.exe, , -940, 0, 940, 1040
 
