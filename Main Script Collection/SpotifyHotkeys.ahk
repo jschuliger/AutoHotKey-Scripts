@@ -8,7 +8,8 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;spotify hotkeys
 ;CONTROLS: 	Numpad7 - single tap: pause/play, double tap: refresh
 ;			Numpad8 - single tap: skip song,  double tap: previous song
-;Issues: when spotify search bar is open, the script doesn't work due to it sending the input in the search bar
+;Issues: 	-when spotify search bar is open, the script doesn't work due to it sending the input in the search bar
+;			-when spotify is active, trying to refresh (ctrl+shift+r) instead enables loop (ctrl+r) when using Numpad7
 ;------------------------------
 
 DetectHiddenWindows, On
