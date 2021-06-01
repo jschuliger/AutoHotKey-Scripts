@@ -1,15 +1,14 @@
 # AutoHotKey-Scripts
 
-Just backing up my AutoHotKey scripts.
-
-- `MainScriptCollection.ahk` - always running, contains multiple scripts combined into one
+- `RunAllCondensed.ahk` - always running, runs all scripts in the `Main Script Collection` folder
 - `ResizeLeft.ahk`* / `ResizeRight.ahk`* - moves certain windows to left/right monitors
-- `SpotifyHotkeys.ahk`* - various spotify hotkeys to pause/refresh/skip etc
-- `TaskbarVolumeScroll.ahk`* - scrolling while hovering over the taskbar changes windows volume
+- `SpotifyHotkeys.ahk`* - various spotify hotkeys to pause/skip/etc
+- `TachiyomiHotkeys.ahk`* - hotkeys for tachiyomi app on bluestacks android emulator
+- `TaskbarVolumeScroll.ahk`* - scrolling while hovering over the taskbar changes Windows volume
+- `YoutubeControl.ahk`* - controls youtube while window is unfocused (sends "J", "K", and "L" inputs to window)
+- `KeybindsForMouse.ahk` - turns my mouse into a computer controller
 - `RunningScripts.ahk` - shows all currently running ahk scripts
-- `DoubleClickFix.ahk` - cancels a click input if mouse double-clicks too fast
-- `Email-Date_HotKeys.ahk` - certain keys output specific text (eg. "]dp" -> "September 1, 2010")
 - `VariousUtilityHotKeys.ahk` - various utilities
 - `tigerlily's Screen Dimmer.exe` - gui to change screen brightness individually and more
 
-*scripts in MainScriptCollection.ahk
+*scripts in `Main Script Collection` folder, which `RunAllCondensed.ahk` uses
