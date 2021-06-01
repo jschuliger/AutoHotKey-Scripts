@@ -4,13 +4,12 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance force
 
-;refresh spotify
 ;------------------------------
-; SpotifyGlobalKeys.ahk:
-; AutoHotkey script to control Spotify with global keyboard shortcuts
-; Author: James Teh <jamie@jantrid.net>
-; Copyright 2017-2018 James Teh
-; License: GNU General Public License version 2.0
+;spotify hotkeys
+;CONTROLS: 	Numpad7 - single tap: pause/play, double tap: refresh
+;			Numpad8 - single tap: skip song,  double tap: previous song
+;Issues: when spotify search bar is open, the script doesn't work due to it sending the input in the search bar
+;------------------------------
 
 DetectHiddenWindows, On
 
@@ -34,16 +33,18 @@ spotifyKey(key) {
 }
 
 Numpad7::	;pause/refresh spotify
+{
     KeyWait, Numpad7			; wait for Numpad7 to be released
-    KeyWait, Numpad7, D T0.1	; and pressed again within 0.2 seconds
+    KeyWait, Numpad7, D T0.1	; and pressed again within 0.1 seconds
     if ErrorLevel 				; timed-out (only a single press)
         spotifyKey("{Space}")	;pause
     Else
         spotifyKey("^+R")	;refresh spotify
 Return
-
+}
 
 Numpad8::	;skip song/go back a song
+{
     KeyWait, Numpad8			; wait for Numpad8 to be released
     KeyWait, Numpad8, D T0.2	; and pressed again within 0.2 seconds
     if ErrorLevel 				; timed-out (only a single press)
@@ -51,3 +52,4 @@ Numpad8::	;skip song/go back a song
     Else
         spotifyKey("^{Left}")	;go back a song
 Return
+}

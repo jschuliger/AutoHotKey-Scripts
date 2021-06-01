@@ -7,7 +7,12 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;WinMove, WinTitle, (WinText), x-coord, y-coord, window length, window height
 ;WinMove, WinTitle, WinText, X, Y [, Width, Height, ExcludeTitle, ExcludeText]
 
-Numpad4::
+;-------------------------------
+;move discord and spotify to left monitor
+;CONTROLS: Numpad4 - move windows to left monitor
+;-------------------------------
+Numpad4::	;keybind key (runs everything until return)
+{
 DetectHiddenWindows, On
 
 ; Get the HWND of the Spotify main window.
@@ -20,11 +25,14 @@ getSpotifyHwnd() {
 }
 
 spotifyHwnd := getSpotifyHwnd()
+WinActivate, ahk_id %spotifyHwnd%
 WinMove, ahk_id %spotifyHwnd%, , -1920, 0, 992, 1040
 
+WinActivate, ahk_exe Discord.exe
 WinMove, ahk_exe Discord.exe, , -940, 0, 940, 1040
 
-WinMove, HakuNeko, , 1913, -475, 1094, 1602
+;WinMove, HakuNeko, , 1913, -475, 1094, 1602
 
-WinMove, BlueStacks, , 1920, -498, 1094, 1602
+;WinMove, BlueStacks, , 1920, -498, 1094, 1602
 return
+}
