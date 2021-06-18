@@ -8,11 +8,104 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;spotify hotkeys
 ;CONTROLS: 	Numpad7 - single tap: pause/play, double tap: refresh
 ;			Numpad8 - single tap: skip song,  double tap: previous song
-;Issues: 	-when spotify search bar is open, the script doesn't work due to it sending the input in the search bar
-;			-when spotify is active, trying to refresh (ctrl+shift+r) instead enables loop (ctrl+r) when using Numpad7
+;			Ctrl+Numpad7 - spotify volume up
+;			Ctrl+Numpad8 - spotify volume down
+;Issues: 	-when spotify search bar is visible, pause/play doesn't work due to it sending the input in the search bar
 ;------------------------------
 
 DetectHiddenWindows, On
+
+Numpad7::pauserefresh()	;play/pause/refresh spotify
+
+Numpad8::skipsong()		;skip song/go back a song
+
+^Numpad7::volumeup()	;volume up
+
+^Numpad8::volumedown()	;volume down
+
+
+
+;----functions----
+
+pauserefresh()
+{
+	DetectHiddenWindows On
+    KeyWait, Numpad7			; wait for Numpad7 to be released
+    KeyWait, Numpad7, D T0.1	; and pressed again within 0.1 seconds
+    if ErrorLevel 				; timed-out (only a single press)
+        playpause()			;play/pause
+    Else
+	{
+		;spotify has some unique properties, so this checks if the window is active first
+		; and sends the input to a "different" place, which is still spotify
+        WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+		if WinActive("ahk_class Chrome_WidgetWin_0")
+			Send, ^+R			;refresh spotify
+		else
+			spotifyKey("^+R")	;refresh spotify
+	}
+Return
+}
+
+playpause()
+{
+	DetectHiddenWindows On
+	WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+
+	if WinActive("ahk_class Chrome_WidgetWin_0")
+		Send, {Space}
+	else
+		spotifyKey("{Space}")
+	Return
+}
+
+
+skipsong()
+{
+	DetectHiddenWindows On
+    KeyWait, Numpad8			; wait for Numpad8 to be released
+    KeyWait, Numpad8, D T0.2	; and pressed again within 0.2 seconds
+    if ErrorLevel 				; timed-out (only a single press)
+	{
+        WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+		if WinActive("ahk_class Chrome_WidgetWin_0")
+			Send, ^{Right}
+		else
+			spotifyKey("^{Right}")	;skip to next song
+	}
+    Else
+	{
+        WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+		if WinActive("ahk_class Chrome_WidgetWin_0")
+			Send, ^{Left}
+		else
+			spotifyKey("^{Left}")	;go back a song
+	}
+Return
+}
+
+volumeup()
+{
+	WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+
+	if WinActive("ahk_class Chrome_WidgetWin_0")
+		Send, ^{Up}
+	else
+		spotifyKey("^{Up}")
+	Return
+}
+
+volumedown()
+{
+	WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+
+	if WinActive("ahk_class Chrome_WidgetWin_0")
+		Send, ^{Down}
+	else
+		spotifyKey("^{Down}")
+	Return
+}
+
 
 ; Get the HWND of the Spotify main window.
 getSpotifyHwnd() {
@@ -31,26 +124,4 @@ spotifyKey(key) {
 	ControlFocus, Chrome_RenderWidgetHostHWND1, ahk_id %spotifyHwnd%
 	ControlSend, , %key%, ahk_id %spotifyHwnd%
 	Return
-}
-
-Numpad7::	;pause/refresh spotify
-{
-    KeyWait, Numpad7			; wait for Numpad7 to be released
-    KeyWait, Numpad7, D T0.1	; and pressed again within 0.1 seconds
-    if ErrorLevel 				; timed-out (only a single press)
-        spotifyKey("{Space}")	;pause
-    Else
-        spotifyKey("^+R")	;refresh spotify
-Return
-}
-
-Numpad8::	;skip song/go back a song
-{
-    KeyWait, Numpad8			; wait for Numpad8 to be released
-    KeyWait, Numpad8, D T0.2	; and pressed again within 0.2 seconds
-    if ErrorLevel 				; timed-out (only a single press)
-        spotifyKey("^{Right}")	;skip to next song
-    Else
-        spotifyKey("^{Left}")	;go back a song
-Return
 }
