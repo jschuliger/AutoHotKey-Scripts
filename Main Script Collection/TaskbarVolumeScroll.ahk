@@ -12,7 +12,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;-------------------------------
 ; Source: http://www.autohotkey.net/~Lexikos/AutoHotkey_L/docs/commands/_If.htm
 
-#If MouseIsOver("ahk_class Shell_TrayWnd")
+#If MouseIsOver("ahk_class Shell_TrayWnd") or MouseIsOver("ahk_class Shell_SecondaryTrayWnd")
 
 WheelUp::
 Send {Volume_Up}

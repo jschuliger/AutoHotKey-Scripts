@@ -11,6 +11,7 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 ;move discord and spotify to specific monitor
 ;CONTROLS: 	Numpad4 - move windows to left monitor
 ;			Numpad6 - move windows to right monitor
+;			Ctrl+Numpad3 - moves active window to middle monitor
 ;			Ctrl+Numpad4 - toggle hide/show specific windows
 ;-------------------------------
 
@@ -50,11 +51,12 @@ Numpad4::	;keybind key
 {
 spotifyHwnd := getSpotifyHwnd()
 WinSet, AlwaysOnTop, on, ahk_id %spotifyHwnd%	;to bring this window to the front
-WinMove, ahk_id %spotifyHwnd%, , -1920, 0, 992, 1040
+;WinMove, ahk_id %spotifyHwnd%, , -1920, 0, 984, 1040
+WinMove, ahk_exe Spotify.exe, , -1920, 0, 984, 1040
 WinSet, AlwaysOnTop, off, ahk_id %spotifyHwnd%
 
 WinGet, DiscordState, MinMax, ahk_exe Discord.exe
-If (DiscordState = -1) ; If Discord is minimized, then restore window
+If (DiscordState = -1) ; If discord is minimized, then restore window
 	WinRestore, ahk_exe Discord.exe
 WinSet, AlwaysOnTop, on, ahk_exe Discord.exe
 WinMove, ahk_exe Discord.exe, , -940, 0, 940, 1040
@@ -68,14 +70,15 @@ Numpad6::	;keybind key
 {
 spotifyHwnd := getSpotifyHwnd()
 WinGet, SpotifyState, MinMax, ahk_id %spotifyHwnd%
-If (SpotifyState = -1) ; If Discord is minimized, then restore window
+If (SpotifyState = -1) ; If spotify is minimized, then restore window
 	WinRestore, ahk_id %spotifyHwnd%
 WinSet, AlwaysOnTop, on, ahk_id %spotifyHwnd%
 WinMove, ahk_id %spotifyHwnd%, , 1920, -760, 1080, 915
+WinMove, ahk_exe Spotify.exe, , 1920, -760, 1080, 915
 WinSet, AlwaysOnTop, off, ahk_id %spotifyHwnd%
 
 WinGet, DiscordState, MinMax, ahk_exe Discord.exe
-If (DiscordState = -1) ; If Discord is minimized, then restore window
+If (DiscordState = -1) ; If discord is minimized, then restore window
 	WinRestore, ahk_exe Discord.exe
 WinSet, AlwaysOnTop, on, ahk_exe Discord.exe
 WinMove, ahk_exe Discord.exe, , 1920, 155, 1080, 965
@@ -85,12 +88,29 @@ WinSet, AlwaysOnTop, off, ahk_exe Discord.exe
 return
 }
 
+;(mostly unnecessary, just use Win+Shift+Right
+^Numpad3::
+{
+if (WinActive("ahk_class Progman") || WinActive("ahk_Class DV2ControlHost") || (WinActive("Start") && WinActive("ahk_class Button")) || WinActive("ahk_class Shell_TrayWnd")) ; disallows minimizing things that shouldn't be minimized, like the task bar and desktop
+	return
+WinGetActiveTitle, Title
+
+sleep, 100
+WinMove, %Title%, , 50, 50, 1000, 800
+sleep, 100
+WinMaximize, %Title%
+WinActivate, %Title%
+return
+}
+
+
 DetectHiddenWindows, On
 ; Get the HWND of the Spotify main window.
 getSpotifyHwnd() {
-	WinGet, spotifyHwnd, ID, ahk_exe spotify.exe
-	; We need the app's third top level window, so get next twice.
-	spotifyHwnd := DllCall("GetWindow", "uint", spotifyHwnd, "uint", 2)
-	spotifyHwnd := DllCall("GetWindow", "uint", spotifyHwnd, "uint", 2)
-	Return spotifyHwnd
+	WinGet, spotifyHwnd1, ID, ahk_exe spotify.exe
+	; We need the app's third top level window, so get next twice. - edit: this was changed for some reason, no longer needed
+	;spotifyHwnd1 := DllCall("GetWindow", "uint", spotifyHwnd1, "uint", 2)
+	;spotifyHwnd1 := DllCall("GetWindow", "uint", spotifyHwnd1, "uint", 2)
+	Return spotifyHwnd1
 }
+

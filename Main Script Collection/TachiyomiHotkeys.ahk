@@ -23,7 +23,20 @@ ControlFocus,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 , % wintitleBS
 ControlSend,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 ,{Right}, % wintitleBS
 return
 
-NumpadEnter::
+^NumpadAdd::	;refresh currently open chapter
+{
+wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"
+ControlFocus,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 , % wintitleBS
+ControlSend,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 ,{Esc}, % wintitleBS
+sleep, 500
+WinGetPos, winX, winY, winWidth, winHeight, % wintitleBS
+X := winWidth * 0.92
+Y := winHeight * 0.95
+ControlClick, x%X% y%Y%, % wintitleBS
+return
+}
+
+NumpadAdd::
 {
     KeyWait, %A_ThisHotkey%			; wait for hotkey to be released
     KeyWait, %A_ThisHotkey%, D T0.1	; and pressed again within 0.1 seconds
