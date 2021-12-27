@@ -1,6 +1,7 @@
 # AutoHotKey-Scripts
 
 - `RunAllCondensed.ahk` - always running, runs all scripts in the `Main Script Collection` folder
+- `NormalKeybinds.ahk`* - changes one key to another
 - `ResizeWindows.ahk`* - moves certain windows to left/right monitors
 - `SpotifyHotkeys.ahk`* - various spotify hotkeys to pause/skip/etc
 - `TachiyomiHotkeys.ahk`* - hotkeys for tachiyomi app on bluestacks android emulator
