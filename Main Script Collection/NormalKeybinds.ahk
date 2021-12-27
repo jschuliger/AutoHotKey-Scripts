@@ -4,4 +4,10 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #singleinstance force
 
+;-------------------------------
+;changes one key to another
+;right now only 1 change, just for ease of use with the numpad
+;-------------------------------
+
+
 Numpad0::Ctrl

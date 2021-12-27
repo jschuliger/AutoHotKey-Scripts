@@ -6,9 +6,12 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;-------------------------------
 ;hotkeys for tachiyomi app on bluestacks android emulator
-;CONTROLS:	NumpadEnter - single tap: minimize tachiyomi, double tap: maximize tachiyomi
+;CONTROLS:	NumpadEnter - 	single tap: minimize tachiyomi, 
+;							double tap: maximize tachiyomi to right monitor
+;							triple tap: maximize tachiyomi to mid monitor
 ;			Numpad2 - turn page left
 ;			Numpad3 - turn page right
+;			Ctrl+NumpadEnter - refresh chapter (if failed to load)
 ;-------------------------------
 
 Numpad2::	;turn page forwards (left)

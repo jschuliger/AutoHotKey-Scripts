@@ -6,16 +6,15 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
 ;------------------------------
 ;spotify hotkeys
-;CONTROLS: 	Numpad7 - single tap: pause/play, double tap: refresh
+;CONTROLS: 	Numpad7 - pause/play
 ;			Numpad8 - single tap: skip song,  double tap: previous song
 ;			Ctrl+Numpad7 - spotify volume up
 ;			Ctrl+Numpad8 - spotify volume down
-;Issues: 	-when spotify search bar is visible, pause/play doesn't work due to it sending the input in the search bar
 ;------------------------------
 
 DetectHiddenWindows, On
 
-Numpad7::pauserefresh()	;play/pause/refresh spotify
+Numpad7::playpause()	;play/pause spotify
 
 Numpad8::skipsong()		;skip song/go back a song
 
@@ -26,26 +25,6 @@ Numpad8::skipsong()		;skip song/go back a song
 
 
 ;----functions----
-
-pauserefresh()
-{
-	DetectHiddenWindows On
-    KeyWait, Numpad7			; wait for Numpad7 to be released
-    KeyWait, Numpad7, D T0.1	; and pressed again within 0.1 seconds
-    if ErrorLevel 				; timed-out (only a single press)
-        playpause()			;play/pause
-    Else
-	{
-		;spotify has some unique properties, so this checks if the window is active first
-		; and sends the input to a "different" place, which is still spotify
-        WinGet, style, Style, ahk_class Chrome_WidgetWin_0
-		if WinActive("ahk_class Chrome_WidgetWin_0")
-			Send, ^+R			;refresh spotify
-		else
-			spotifyKey("^+R")	;refresh spotify
-	}
-Return
-}
 
 playpause()
 {
@@ -125,3 +104,27 @@ spotifyKey(key) {
 	ControlSend, , %key%, ahk_id %spotifyHwnd%
 	Return
 }
+
+
+;deprecated, spotify can no longer be refreshed
+/*
+pauserefresh()
+{
+	DetectHiddenWindows On
+    KeyWait, Numpad7			; wait for Numpad7 to be released
+    KeyWait, Numpad7, D T0.1	; and pressed again within 0.1 seconds
+    if ErrorLevel 				; timed-out (only a single press)
+        playpause()			;play/pause
+    Else
+	{
+		;spotify has some unique properties, so this checks if the window is active first
+		; and sends the input to a "different" place, which is still spotify
+        WinGet, style, Style, ahk_class Chrome_WidgetWin_0
+		if WinActive("ahk_class Chrome_WidgetWin_0")
+			Send, ^+R			;refresh spotify
+		else
+			spotifyKey("^+R")	;refresh spotify
+	}
+Return
+}
+*/
