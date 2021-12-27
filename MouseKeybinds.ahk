@@ -61,17 +61,9 @@ sleep 1400
 WinMove, tigerlily's Screen Dimmer, , 1913, -475, 600, 600
 return
 }
-0::NumpadEnter	;minimize/maximize tachiyomi
--::
-{
-WinMinimize, Vivaldi
-WinMinimize, BlueStacks
-WinMinimize, ahk_exe Discord.exe
-spotifyHwnd := getSpotifyHwnd()
-WinMinimize, ahk_id %spotifyHwnd%
-return
-}
-=::
+0::NumpadAdd	;minimize/maximize/resize tachiyomi
+-::^Numpad4
+=::^NumpadAdd
 {
 WinActivate, Vivaldi
 WinActivate, ahk_exe Discord.exe

@@ -34,6 +34,7 @@ return
   3: page right
   4: next song/prev song on spotify
   6: minimize/maximize tachiyomi
+  POV0: pause/play/ff youtube
   POV9000: move discord/spotify to right monitor
   POV18000: open screen dimmer
   POV27000: move discord/spotify to left monitor
@@ -86,7 +87,7 @@ if POV < 0   ; No angle to report
 ;for dpad cardinal directions
 ;*******
 else if POV = 0      ; 0 to 45 degrees: Up
-    KeyToHoldDown = 
+    KeyToHoldDown = Numpad5
 else if POV = 9000 ; 45 to 135 degrees: Right
     KeyToHoldDown = Numpad6	;move discord/spotify to right monitor
 else if POV = 18000 ; 135 to 225 degrees: Down
