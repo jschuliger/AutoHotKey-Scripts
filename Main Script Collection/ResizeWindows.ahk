@@ -2,115 +2,82 @@
 ; #Warn  ; Enable warnings to assist with detecting common errors.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-#SingleInstance force
-
-;WinMove, WinTitle, (WinText), x-coord, y-coord, window length, window height
-;WinMove, WinTitle, WinText, X, Y [, Width, Height, ExcludeTitle, ExcludeText]
-
-;-------------------------------
-;move discord and spotify to specific monitor
-;CONTROLS: 	Numpad4 - move windows to left monitor
-;			Numpad6 - move windows to right monitor
-;			Ctrl+Numpad3 - moves active window to middle monitor
-;			Ctrl+Numpad4 - toggle hide/show specific windows
-;-------------------------------
-
-DetectHiddenWindows, On
-SetWinDelay, 1	;comment out if having issues
+DetectHiddenWindows, on
 SetTitleMatchMode, 2
-
-^Numpad4::
-{
-	spotifyHwnd := getSpotifyHwnd()
-	WinGet, style, Style, ahk_id %spotifyHwnd%
-	if (style & 0x10000000) { ; WS_VISIBLE
-		WinHide, ahk_id %spotifyHwnd%
-	} Else {
-		WinShow, ahk_id %spotifyHwnd%
-		;WinActivate, ahk_id %spotifyHwnd%
-	}
-	WinGet, style, Style, ahk_exe Discord.exe
-	if (style & 0x10000000) { ; WS_VISIBLE
-		WinHide, ahk_exe Discord.exe
-	} Else {
-		WinShow, ahk_exe Discord.exe
-		;WinActivate, ahk_exe Discord.exe
-	}
-	WinGet, style, Style, Vivaldi
-	if (style & 0x10000000) { ; WS_VISIBLE
-		WinHide, Vivaldi
-	} Else {
-		WinShow, Vivaldi
-		;WinActivate, Vivaldi
-	}
-	Return
-}
+#SingleInstance force
+SetWinDelay, 1	;comment out if having issues
 
 
-Numpad4::	;keybind key
-{
-spotifyHwnd := getSpotifyHwnd()
-WinSet, AlwaysOnTop, on, ahk_id %spotifyHwnd%	;to bring this window to the front
-;WinMove, ahk_id %spotifyHwnd%, , -1920, 0, 984, 1040
-WinMove, ahk_exe Spotify.exe, , -1920, 0, 984, 1040
-WinSet, AlwaysOnTop, off, ahk_id %spotifyHwnd%
+; ------------------------------------------------------
+; manipulates windows by moving or hiding/showing them
+Hotkey, Numpad4, MoveWinLeft	; move specific windows to left monitor
+Hotkey, Numpad6, MoveWinRight	; move specific windows to right monitor
+Hotkey, ^Numpad3, MoveToCenter	; move active window to middle monitor
+Hotkey, ^Numpad4, ToggleWindows	; toggle visibility of specific windows
+; ------------------------------------------------------
 
-WinGet, DiscordState, MinMax, ahk_exe Discord.exe
-If (DiscordState = -1) ; If discord is minimized, then restore window
-	WinRestore, ahk_exe Discord.exe
-WinSet, AlwaysOnTop, on, ahk_exe Discord.exe
-WinMove, ahk_exe Discord.exe, , -940, 0, 940, 1040
-WinSet, AlwaysOnTop, off, ahk_exe Discord.exe
-
-;WinMove, BlueStacks, , 1920, -498, 1094, 1602
+; creating 4 basic positions for windows
+x1 := -1920, y1 := 0, w1 := 984, h1 := 1040   ; left monitor, left side
+x2 := -940, y2 := 0, w2 := 940, h2 := 1040    ; left monitor, right side
+x3 := 1920, y3 := -760, w3 := 1080, h3 := 915 ; right monitor, top right
+x4 := 1920, y4 := 155, w4 := 1080, h4 := 965  ; right monitor, bottom right
 return
-}
 
-Numpad6::	;keybind key
+MoveWinLeft:
+; moves spotify+discord to left monitor, making sure they are visible
 {
-spotifyHwnd := getSpotifyHwnd()
-WinGet, SpotifyState, MinMax, ahk_id %spotifyHwnd%
-If (SpotifyState = -1) ; If spotify is minimized, then restore window
-	WinRestore, ahk_id %spotifyHwnd%
-WinSet, AlwaysOnTop, on, ahk_id %spotifyHwnd%
-WinMove, ahk_id %spotifyHwnd%, , 1920, -760, 1080, 915
-WinMove, ahk_exe Spotify.exe, , 1920, -760, 1080, 915
-WinSet, AlwaysOnTop, off, ahk_id %spotifyHwnd%
-
-WinGet, DiscordState, MinMax, ahk_exe Discord.exe
-If (DiscordState = -1) ; If discord is minimized, then restore window
-	WinRestore, ahk_exe Discord.exe
-WinSet, AlwaysOnTop, on, ahk_exe Discord.exe
-WinMove, ahk_exe Discord.exe, , 1920, 155, 1080, 965
-WinSet, AlwaysOnTop, off, ahk_exe Discord.exe
-
-;WinMove, BlueStacks, , 1920, -498, 1094, 1602
-return
-}
-
-;(mostly unnecessary, just use Win+Shift+Right
-^Numpad3::
-{
-if (WinActive("ahk_class Progman") || WinActive("ahk_Class DV2ControlHost") || (WinActive("Start") && WinActive("ahk_class Button")) || WinActive("ahk_class Shell_TrayWnd")) ; disallows minimizing things that shouldn't be minimized, like the task bar and desktop
+	MoveWindow("ahk_exe spotify.exe", x1, y1, w1, h1)
+	MoveWindow("ahk_exe Discord.exe", x2, y2, w2, h2)
 	return
-WinGetActiveTitle, Title
+}
 
-sleep, 100
-WinMove, %Title%, , 50, 50, 1000, 800
-sleep, 100
-WinMaximize, %Title%
-WinActivate, %Title%
-return
+MoveWinRight:
+; moves spotify+discord to right monitor, making sure they are visible
+{
+	MoveWindow("ahk_exe spotify.exe", x3, y3, w3, h3)
+	MoveWindow("ahk_exe Discord.exe", x4, y4, w4, h4)
+	return
+}
+
+MoveToCenter:
+; moves active window to center monitor and maximizes it
+; alternatively, just use Win+Shift+Right/Left
+{
+	; disallows minimizing things that shouldn't be minimized, like the task bar and desktop
+	if (WinActive("ahk_class Progman") || WinActive("ahk_Class DV2ControlHost") || (WinActive("Start") && WinActive("ahk_class Button")) || WinActive("ahk_class Shell_TrayWnd"))
+		return
+	WinGetActiveTitle, title
+	WinRestore, %title%
+	WinMove, %title%, , 50, 50, 1000, 800
+	WinMaximize, %title%
+	WinActivate, %title%
+	return
+}
+
+ToggleWindows:
+; toggle visibility of specific windows
+{
+	ToggleVisibility("ahk_exe spotify.exe")
+	ToggleVisibility("ahk_exe Discord.exe")
+	ToggleVisibility("Vivaldi")
+	return
 }
 
 
-DetectHiddenWindows, On
-; Get the HWND of the Spotify main window.
-getSpotifyHwnd() {
-	WinGet, spotifyHwnd1, ID, ahk_exe spotify.exe
-	; We need the app's third top level window, so get next twice. - edit: this was changed for some reason, no longer needed
-	;spotifyHwnd1 := DllCall("GetWindow", "uint", spotifyHwnd1, "uint", 2)
-	;spotifyHwnd1 := DllCall("GetWindow", "uint", spotifyHwnd1, "uint", 2)
-	Return spotifyHwnd1
+; -------------------- functions --------------------
+MoveWindow(window, x, y, w, h) {
+; moves window to desired coordinates, guaranteeing visibility
+	WinRestore, %window%
+	WinSet, AlwaysOnTop, on, %window%
+	WinMove, %window%,, %x%, %y%, %w%, %h%
+	WinSet, AlwaysOnTop, off, %window%
 }
 
+ToggleVisibility(window) {
+; toggles the visibility of the given window
+	WinGet, style, Style, %window%
+	if (style & 0x10000000) ; WS_VISIBLE
+		WinHide, %window%
+	else
+		WinShow, %window%
+}

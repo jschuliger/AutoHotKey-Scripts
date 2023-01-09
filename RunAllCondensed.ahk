@@ -8,7 +8,12 @@
 ; Removes the Scripts' Tray Icons leaving only AHK Startup
 ; Creates a ToolTip for the One Tray Icon Showing the Startup Scripts
 ; If AHK Startup is Exited All Startup Scripts are Exited
-;}
+
+; setting the icon
+I_Icon = C:\Users\Jay\Desktop\r\previous r\225ico.ico
+IfExist, %I_Icon%
+Menu, Tray, Icon, %I_Icon%
+;return
 
 ; INITIALIZATION - ENVIROMENT
 ;{-----------------------------------------------
@@ -25,7 +30,7 @@ DetectHiddenWindows, On
 ;
 Files := [	; Additional Startup Files and Folders Can Be Added Between the ( Continuations  ) Below
 (Join, 
-"C:\Users\Jay\Desktop\AHK Scripts\Main Script Collection\"
+"Main Script Collection\"
 )]
 ;}
 

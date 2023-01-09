@@ -4,71 +4,67 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 #SingleInstance force
 
-;-------------------------------
-;hotkeys for tachiyomi app on bluestacks android emulator
-;CONTROLS:	NumpadEnter - 	single tap: minimize tachiyomi, 
-;							double tap: maximize tachiyomi to right monitor
-;							triple tap: maximize tachiyomi to mid monitor
-;			Numpad2 - turn page left
-;			Numpad3 - turn page right
-;			Ctrl+NumpadEnter - refresh chapter (if failed to load)
-;-------------------------------
+; ------------------------------------------------------
+; hotkeys for tachiyomi app on bluestacks 5 android emulator
+Hotkey, Numpad2, PageLeft	; turn page left
+Hotkey, Numpad3, PageRight	; turn page right
+Hotkey, NumpadAdd, WindowControl	; 1 tap to minimize, 2 to move to right monitor, 3 to move to center monitor
+Hotkey, ^NumpadAdd, RefreshChap	; refresh chapter (if failed to load)
+; ------------------------------------------------------
 
-Numpad2::	;turn page forwards (left)
-wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"
-ControlFocus,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 , % wintitleBS
-ControlSend,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 ,{Left}, % wintitleBS
+wintitleBS := "BlueStacks ahk_exe HD-Player.exe"
 return
 
-Numpad3::	;turn page backwards (right)
-wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"
-ControlFocus,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 , % wintitleBS
-ControlSend,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 ,{Right}, % wintitleBS
-return
 
-^NumpadAdd::	;refresh currently open chapter
+PageLeft:
+; turn page forwards (left)
+	ControlFocus, plrNativeInputWindowClass1, %wintitleBS%
+	ControlSend, plrNativeInputWindowClass1, {Left}, %wintitleBS%
+	return
+
+PageRight:
+;turn page backwards (right)
+	ControlFocus, plrNativeInputWindowClass1, %wintitleBS%
+	ControlSend, plrNativeInputWindowClass1, {Right}, %wintitleBS%
+	return
+
+WindowControl:
+; minimize, maximize, and move to right or center monitor depending on number of times pressed
+; works with tCLK, below
+	vCTR++
+	SetTimer tCLK, 200	; 200ms between hotkey presses
+	return
+tCLK:
 {
-wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"
-ControlFocus,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 , % wintitleBS
-ControlSend,WindowsForms10.Window.8.app.0.2fc056_r6_ad11 ,{Esc}, % wintitleBS
-sleep, 500
-WinGetPos, winX, winY, winWidth, winHeight, % wintitleBS
-X := winWidth * 0.92
-Y := winHeight * 0.95
-ControlClick, x%X% y%Y%, % wintitleBS
-return
+	if (vCTR=1)	; number of hotkey presses
+		WinMinimize %wintitleBS%
+	else if (vCTR=2)
+	{
+		WinMaximize %wintitleBS%
+		WinSet, AlwaysOnTop, on, %wintitleBS%
+		WinMove, BlueStacks,, 1920, -498, 1080, 1602
+		WinSet, AlwaysOnTop, off, %wintitleBS%
+	}
+	else if (vCTR>=3)
+	{
+		WinMaximize %wintitleBS%
+		WinSet, AlwaysOnTop, on, %wintitleBS%
+		WinMove, BlueStacks,, 1000, 0, 690, 1040
+		WinSet, AlwaysOnTop, off, %wintitleBS%
+	}
+	vCTR:=0
+	return
 }
 
-NumpadAdd::
+RefreshChap:
+; refresh currently open chapter
 {
-    KeyWait, %A_ThisHotkey%			; wait for hotkey to be released
-    KeyWait, %A_ThisHotkey%, D T0.1	; and pressed again within 0.1 seconds
-    if ErrorLevel{				; timed-out (only a single press)
-        wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"	;minimize BlueStacks
-		WinMinimize % wintitleBS
-		return
-		}
-    Else{
-		KeyWait, %A_ThisHotkey%			; wait for hotkey to be released
-		KeyWait, %A_ThisHotkey%, D T0.2	; and pressed again within 0.2 seconds
-		if ErrorLevel{
-			wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"	;maximize BlueStacks (right monitor)
-			WinMaximize % wintitleBS
-			WinSet, AlwaysOnTop, on, % wintitleBS
-			WinMove, BlueStacks, , 1920, -498, 1094, 1602 	;have to call this twice for some weird
-			WinMove, BlueStacks, , 1920, -498, 1094, 1602	;bluestacks-specific reason
-			WinSet, AlwaysOnTop, off, % wintitleBS
-			return
-		}
-		Else{
-			wintitleBS := "BlueStacks ahk_exe Bluestacks.exe"	;maximize BlueStacks (center monitor)
-			WinMaximize % wintitleBS
-			WinSet, AlwaysOnTop, on, % wintitleBS
-			WinMove, BlueStacks, , 1000, 0, 720, 1200	;have to call this twice for some weird
-			WinMove, BlueStacks, , 1000, 0, 720, 1200	;bluestacks-specific reason
-			WinSet, AlwaysOnTop, off, % wintitleBS
-			return
-		}
-	}
-return
+	ControlFocus, plrNativeInputWindowClass1, % wintitleBS
+	ControlSend, plrNativeInputWindowClass1, {Esc}, % wintitleBS
+	sleep, 500
+	WinGetPos, winX, winY, winWidth, winHeight, % wintitleBS
+	X := winWidth * 0.92
+	Y := winHeight * 0.95
+	ControlClick, x%X% y%Y%, % wintitleBS
+	return
 }
