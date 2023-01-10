@@ -8,6 +8,8 @@ DetectHiddenWindows, on
 
 ; ------------------------------------------------------
 ; spotify hotkeys
+; NOTE: sometimes these hotkeys don't work when spotify is minimized,
+;		likely due to spotify updates
 Hotkey, Numpad7, PausePlay		; pause/play
 Hotkey, Numpad8, SkipOrRewind	; single tap: skip song,  double tap: previous song
 Hotkey, ^Numpad7, VolumeUp		; spotify volume up
@@ -19,7 +21,10 @@ return
 PausePlay:
 {
 	WinGet, style, Style, ahk_exe spotify.exe
+	WinGet, state, MinMax, ahk_exe spotify.exe
 	if !(style & 0x10000000)	; WS_VISIBLE
+		Send, {Media_Play_Pause}
+	else if (state = -1)	; minimized
 		Send, {Media_Play_Pause}
 	else if WinActive("ahk_class Chrome_WidgetWin_0")
 		Send, {Space}
@@ -35,9 +40,12 @@ SkipOrRewind:
 tCLK:
 {
 	WinGet, style, Style, ahk_exe spotify.exe
+	WinGet, state, MinMax, ahk_exe spotify.exe
 	if (vCTR=1)	; number of hotkey presses
 	{
 		if !(style & 0x10000000)	; WS_VISIBLE
+			Send, {Media_Next}
+		else if (state = -1)	; minimized
 			Send, {Media_Next}
 		else if WinActive("ahk_exe spotify.exe")
 			Send, ^{Right}
@@ -47,6 +55,8 @@ tCLK:
 	else if (vCTR>=2)
 	{
 		if !(style & 0x10000000)	; WS_VISIBLE
+			Send, {Media_Previous}
+		else if (state = -1)	; minimized
 			Send, {Media_Previous}
 		else if WinActive("ahk_exe spotify.exe")
 			Send, ^{Left}
